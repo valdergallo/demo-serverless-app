@@ -7,48 +7,38 @@ from datetime import datetime
 
 def lambda_handler(message, context):
 
-    if ('body' not in message or
-            message['httpMethod'] != 'POST'):
+    if "body" not in message or message["httpMethod"] != "POST":
         return {
-            'statusCode': 400,
-            'headers': {},
-            'body': json.dumps({'msg': 'Bad Request'})
+            "statusCode": 400,
+            "headers": {},
+            "body": json.dumps({"msg": "Bad Request"}),
         }
 
-    table_name = os.environ.get('TABLE', 'Activities')
-    region = os.environ.get('REGION', 'us-east-1')
-    aws_environment = os.environ.get('AWSENV', 'AWS_SAM_LOCAL')
+    table_name = os.environ.get("TABLE", "Activities")
+    region = os.environ.get("REGION", "us-east-1")
+    aws_environment = os.environ.get("AWSENV", "AWS_SAM_LOCAL")
 
-    if aws_environment == 'AWS_SAM_LOCAL':
+    if aws_environment == "AWS_SAM_LOCAL":
         activities_table = boto3.resource(
-            'dynamodb',
-            endpoint_url='http://dynamodb:8000'
+            "dynamodb", endpoint_url="http://dynamodb:8000"
         )
     else:
-        activities_table = boto3.resource(
-            'dynamodb',
-            region_name=region
-        )
+        activities_table = boto3.resource("dynamodb", region_name=region)
 
     table = activities_table.Table(table_name)
-    activity = json.loads(message['body'])
+    activity = json.loads(message["body"])
 
     params = {
-        'id': str(uuid.uuid4()),
-        'date': str(datetime.timestamp(datetime.now())),
-        'stage': activity['stage'],
-        'description': activity['description']
+        "id": str(uuid.uuid4()),
+        "date": str(datetime.timestamp(datetime.now())),
+        "stage": activity["stage"],
+        "description": activity["description"],
     }
 
-    table.put_item(
-        TableName=table_name,
-        Item=params
-    )
+    table.put_item(TableName=table_name, Item=params)
 
     return {
-        'statusCode': 201,
-        'headers': {},
-        'body': json.dumps(
-            {'msg': 'Activity created'}
-        )
+        "statusCode": 201,
+        "headers": {},
+        "body": json.dumps({"msg": "Activity created"}),
     }
