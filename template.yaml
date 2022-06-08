@@ -1,0 +1,238 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  demo-serverless-app
+
+  Sample SAM Template for demo-serverless-app
+
+Globals:
+  Function:
+    Timeout: 60
+    Tracing: Active
+  Api:
+    TracingEnabled: True
+
+Parameters:
+  Table:
+    Type: String
+    Default: Activities
+  Region:
+    Type: String
+    Default: us-east-1
+  AWSEnv:
+    Type: String
+    Default: AWS
+
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: activities/
+      Handler: hello.lambda_handler
+      Runtime: python3.9
+      Environment:
+        Variables:
+          TABLE: !Ref Table
+          REGION: !Ref Region
+          AWSENV: !Ref AWSEnv
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ActivitiesTable
+      Events:
+        MainEvent:
+          Type: Api
+          Properties:
+            Path: /hello/
+            Method: get
+
+  CreateActivityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: activities/
+      Handler: create_activity.lambda_handler
+      Runtime: python3.9
+      Environment:
+        Variables:
+          TABLE: !Ref Table
+          REGION: !Ref Region
+          AWSENV: !Ref AWSEnv
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ActivitiesTable
+      Events:
+        MainEvent:
+          Type: Api
+          Properties:
+            Path: /activities/
+            Method: post
+
+  GetActivityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: activities/
+      Handler: get_activity.lambda_handler
+      Runtime: python3.9
+      Environment:
+        Variables:
+          TABLE: !Ref Table
+          REGION: !Ref Region
+          AWSENV: !Ref AWSEnv
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ActivitiesTable
+      Events:
+        MainEvent:
+          Type: Api
+          Properties:
+            Path: /activities/{id}
+            Method: get
+
+  ListActivitiesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: activities/
+      Handler: list_activity.lambda_handler
+      Runtime: python3.9
+      Environment:
+        Variables:
+          TABLE: !Ref Table
+          REGION: !Ref Region
+          AWSENV: !Ref AWSEnv
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ActivitiesTable
+      Events:
+        MainEvent:
+          Type: Api
+          Properties:
+            Path: /activities/
+            Method: get
+
+  UpdateActivityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: activities/
+      Handler: list_activity.lambda_handler
+      Runtime: python3.9
+      Environment:
+        Variables:
+          TABLE: !Ref Table
+          REGION: !Ref Region
+          AWSENV: !Ref AWSEnv
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ActivitiesTable
+      Events:
+        MainEvent:
+          Type: Api
+          Properties:
+            Path: /activities/{id}
+            Method: put
+
+  DeleteActivityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: activities/
+      Handler: list_activity.lambda_handler
+      Runtime: python3.9
+      Environment:
+        Variables:
+          TABLE: !Ref Table
+          REGION: !Ref Region
+          AWSENV: !Ref AWSEnv
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ActivitiesTable
+      Events:
+        MainEvent:
+          Type: Api
+          Properties:
+            Path: /activities/{id}
+            Method: delete
+
+  ActivitiesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"
+        -
+          AttributeName: "date"
+          AttributeType: "S"
+        -
+          AttributeName: "stage"
+          AttributeType: "S"
+        -
+          AttributeName: "description"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "id"
+          KeyType: "HASH"
+        -
+          AttributeName: "date"
+          KeyType: "RANGE"
+        -
+          AttributeName: "stage"
+          KeyType: "STRING"
+        -
+          AttributeName: "description"
+          KeyType: "STRING"
+      ProvisionedThroughput:
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+      TableName: "Activities"
+
+Outputs:
+  ActivitiesApi:
+    Description: "API Gateway endpoint URL for Prod stage for Activities function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/activities/"
+    CreateActivityFunction:
+    Description: "Create Activity Lambda Function ARN"
+    Value: !GetAtt CreateActivityFunction.Arn
+  CreateActivityFunctionIamRole:
+    Description: "Implicit IAM Role created for Create Activity function"
+    Value: !GetAtt CreateActivityFunctionRole.Arn
+  GetActivityFunction:
+    Description: "Get Activity Lambda Function ARN"
+    Value: !GetAtt GetActivityFunction.Arn
+  GetActivityFunctionIamRole:
+    Description: "Implicit IAM Role created for Get Activity function"
+    Value: !GetAtt GetActivityFunctionRole.Arn
+  ListActivitiesFunction:
+    Description: "List Activities Lambda Function ARN"
+    Value: !GetAtt ListActivitiesFunction.Arn
+  ListActivitiesFunctionIamRole:
+    Description: "Implicit IAM Role created for List Activities function"
+    Value: !GetAtt ListActivitiesFunctionRole.Arn
+  UpdateActivityFunction:
+    Description: "Update Activity Lambda Function ARN"
+    Value: !GetAtt UpdateActivityFunction.Arn
+  UpdateActivityFunctionIamRole:
+    Description: "Implicit IAM Role created for Update Activity function"
+    Value: !GetAtt UpdateActivityFunctionRole.Arn
+  DeleteActivityFunction:
+    Description: "Delete Activity Lambda Function ARN"
+    Value: !GetAtt DeleteActivityFunction.Arn
+  DeleteActivityFunctionIamRole:
+    Description: "Implicit IAM Role created for Delete Activity function"
+    Value: !GetAtt DeleteActivityFunctionRole.Arn
+  ActivitiesTable:
+    Description: "DynamoDB Table"
+    Value: !Ref ActivitiesTable
+  ActivitiesTableArn:
+    Description: "DynamoDB Table ARN"
+    Value: !GetAtt ActivitiesTable.Arn
