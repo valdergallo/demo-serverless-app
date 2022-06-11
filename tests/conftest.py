@@ -23,8 +23,10 @@ def dynamodb(aws_credentials):
 
 
 @pytest.fixture(scope="function")
-def dynamodb_table(dynamodb):
-    yield dynamodb.Table(TABLE_NAME)
+def dynamodb_table(dynamodb, mocker):
+    db_table = dynamodb.Table(TABLE_NAME)
+    with mocker.patch("activities.connection.get_table", return_value=db_table):
+        yield db_table
 
 
 @pytest.fixture(scope="function", autouse=True)

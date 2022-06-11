@@ -1,5 +1,4 @@
 import json
-
 import pytest
 
 
@@ -11,10 +10,8 @@ def create_activity_event():
 
 
 def test_create_activity_201(create_activity_event, dynamodb_table, mocker):
-    with mocker.patch("activities.connection.get_table", return_value=dynamodb_table):
-        from activities import create_activity
-
-        response = create_activity.lambda_handler(create_activity_event, "")
+    from activities import create_activity
+    response = create_activity.lambda_handler(create_activity_event, "")
 
     payload = {
         "statusCode": 201,
@@ -30,10 +27,8 @@ def test_create_activity_201(create_activity_event, dynamodb_table, mocker):
 
 
 def test_create_activity_400(dynamodb_table, mocker):
-    with mocker.patch("activities.connection.get_table", return_value=dynamodb_table):
-        from activities import create_activity
-
-        response = create_activity.lambda_handler({}, "")
+    from activities import create_activity
+    response = create_activity.lambda_handler({}, "")
 
     payload = {
         "statusCode": 400,
