@@ -6,6 +6,8 @@ from moto import mock_dynamodb2
 
 from activities.constants import TABLE_NAME
 
+GET_TABLE_PATH = "activities.connection.get_table"
+
 
 @pytest.fixture(scope="function")
 def aws_credentials():
@@ -25,7 +27,7 @@ def dynamodb(aws_credentials):
 @pytest.fixture(scope="function")
 def dynamodb_table(dynamodb, mocker):
     db_table = dynamodb.Table(TABLE_NAME)
-    with mocker.patch("activities.connection.get_table", return_value=db_table):
+    with mocker.patch(GET_TABLE_PATH, return_value=db_table):
         yield db_table
 
 
