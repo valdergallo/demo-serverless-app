@@ -17,7 +17,7 @@ server:
 load_data:
 	aws dynamodb put-item --table-name Activities --item file://$(CURDIR)/data_model/DataModel.json --endpoint-url http://localhost:8000 --return-consumed-capacity TOTAL
 
-list_tables:
+list_table:
 	aws dynamodb list-tables --endpoint-url http://localhost:8000
 
 run_dynamo_admin:

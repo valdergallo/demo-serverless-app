@@ -1,0 +1,63 @@
+{
+    "Table": {
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "id",
+                "AttributeType": "S"
+            },
+            {
+                "AttributeName": "id_key",
+                "AttributeType": "S"
+            },
+            {
+                "AttributeName": "date",
+                "AttributeType": "S"
+            }
+        ],
+        "TableName": "Activities",
+        "KeySchema": [
+            {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+            },
+            {
+                "AttributeName": "id_key",
+                "KeyType": "RANGE"
+            }
+        ],
+        "TableStatus": "ACTIVE",
+        "CreationDateTime": "2022-06-11T09:15:58.125000-03:00",
+        "ProvisionedThroughput": {
+            "LastIncreaseDateTime": "1969-12-31T21:00:00-03:00",
+            "LastDecreaseDateTime": "1969-12-31T21:00:00-03:00",
+            "NumberOfDecreasesToday": 0,
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:ddblocal:000000000000:table/Activities",
+        "GlobalSecondaryIndexes": [
+            {
+                "IndexName": "date_key",
+                "KeySchema": [
+                    {
+                        "AttributeName": "date",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "Projection": {
+                    "ProjectionType": "ALL"
+                },
+                "IndexStatus": "ACTIVE",
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": 1,
+                    "WriteCapacityUnits": 1
+                },
+                "IndexSizeBytes": 0,
+                "ItemCount": 0,
+                "IndexArn": "arn:aws:dynamodb:ddblocal:000000000000:table/Activities/index/date_key"
+            }
+        ]
+    }
+}

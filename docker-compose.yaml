@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - "./local/dynamodb:/home/dynamodblocal/data"
+      - ".dynamodb_data:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
 
 networks:

@@ -73,7 +73,7 @@ Temporary Items
 .idea/**/gradle.xml
 .idea/**/libraries
 
-local/**
+.dynamodb_data/**
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
