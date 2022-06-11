@@ -1,6 +1,7 @@
 import json
 import uuid
 from datetime import datetime
+
 from activities.connection import get_table
 from activities.constants import TABLE_NAME
 

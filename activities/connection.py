@@ -1,5 +1,6 @@
 import boto3
-from activities.constants import REGION, AWS_ENVIRONMENT, TABLE_NAME
+
+from activities.constants import AWS_ENVIRONMENT, REGION, TABLE_NAME
 
 _global_connection = None
 

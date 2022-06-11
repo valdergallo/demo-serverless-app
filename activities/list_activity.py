@@ -1,4 +1,5 @@
 import json
+
 from activities.connection import get_table
 
 
