@@ -1,18 +1,18 @@
 import json
-from unittest.mock import patch
-from activities.create_activity import lambda_handler
-from .common import dynamodb_conn
-
-table_name = "Activities"
-
-event_data = "events/create_activity_event.json"
-with open(event_data, "r") as f:
-    event = json.load(f)
+import pytest
 
 
-@patch("activities.connection.get_connection", return_value=dynamodb_conn())
-def test_create_activity_201(dynamodb_conn):
-    response = lambda_handler(event, "")
+@pytest.fixture
+def create_activity_event():
+    event_data = "events/create_activity_event.json"
+    with open(event_data, "r") as f:
+        return json.load(f)
+
+
+def test_create_activity_201(create_activity_event, dynamodb_table, mocker):
+    with mocker.patch("activities.connection.get_table", return_value=dynamodb_table):
+        from activities import create_activity
+        response = create_activity.lambda_handler(create_activity_event, "")
 
     payload = {
         "statusCode": 201,
@@ -20,16 +20,17 @@ def test_create_activity_201(dynamodb_conn):
         "body": json.dumps({"msg": "Activity created"}),
     }
 
-    item = dynamodb_conn.scan(TableName=table_name)
+    item = dynamodb_table.scan()
 
     assert item != ""
-    assert event["httpMethod"] == "POST"
+    assert create_activity_event["httpMethod"] == "POST"
     assert response == payload
 
 
-@patch("activities.connection.get_connection", return_value=dynamodb_conn())
-def test_create_activity_400(dynamodb_conn):
-    response = lambda_handler({}, "")
+def test_create_activity_400(dynamodb_table, mocker):
+    with mocker.patch("activities.connection.get_table", return_value=dynamodb_table):
+        from activities import create_activity
+        response = create_activity.lambda_handler({}, "")
 
     payload = {
         "statusCode": 400,
