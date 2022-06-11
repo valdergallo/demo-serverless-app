@@ -6,6 +6,7 @@ from moto import mock_dynamodb2
 from unittest.mock import patch
 from activities.create_activity import lambda_handler
 from contextlib import contextmanager
+from activities.connection import get_connection
 from activities.constants import TABLE_NAME
 
 
@@ -16,12 +17,7 @@ def dynamodb_conn():
 
 
 def set_up_dynamodb():
-    conn = boto3.resource(
-        "dynamodb",
-        region_name="us-east-1",
-        aws_access_key_id="mock",
-        aws_secret_access_key="mock",
-    )
+    conn = get_connection()
     conn.create_table(
         TableName=TABLE_NAME,
         KeySchema=[

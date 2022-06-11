@@ -1,4 +1,4 @@
-from .connection import get_table
+from activities.connection import get_table
 import json
 
 
