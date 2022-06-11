@@ -1,8 +1,8 @@
-import boto3
-import os
 import json
 import uuid
 from datetime import datetime
+from connection import get_table
+from constants import TABLE_NAME
 
 
 def lambda_handler(message, context):
@@ -14,18 +14,7 @@ def lambda_handler(message, context):
             "body": json.dumps({"msg": "Bad Request"}),
         }
 
-    table_name = os.environ.get("TABLE", "Activities")
-    region = os.environ.get("REGION", "us-east-1")
-    aws_environment = os.environ.get("AWSENV", "AWS_SAM_LOCAL")
-
-    if aws_environment == "AWS_SAM_LOCAL":
-        activities_table = boto3.resource(
-            "dynamodb", endpoint_url="http://dynamodb:8000"
-        )
-    else:
-        activities_table = boto3.resource("dynamodb", region_name=region)
-
-    table = activities_table.Table(table_name)
+    table = get_table()
     activity = json.loads(message["body"])
 
     params = {
@@ -35,7 +24,7 @@ def lambda_handler(message, context):
         "description": activity["description"],
     }
 
-    table.put_item(TableName=table_name, Item=params)
+    table.put_item(TableName=TABLE_NAME, Item=params)
 
     return {
         "statusCode": 201,
