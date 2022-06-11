@@ -1,6 +1,6 @@
 import json
 from boto3.dynamodb.conditions import Key
-from connection import get_table
+from .connection import get_table
 
 
 def lambda_handler(message, context):

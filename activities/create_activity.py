@@ -1,8 +1,8 @@
 import json
 import uuid
 from datetime import datetime
-from connection import get_table
-from constants import TABLE_NAME
+from .connection import get_table
+from .constants import TABLE_NAME
 
 
 def lambda_handler(message, context):

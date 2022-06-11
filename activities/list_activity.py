@@ -1,5 +1,5 @@
 import json
-from connection import get_table
+from .connection import get_table
 
 
 def lambda_handler(message, context):
